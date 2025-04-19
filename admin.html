@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f7fa;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #1e293b;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    fieldset {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    legend {
+      padding: 0 10px;
+      font-weight: 600;
+      color: #38bdf8;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+    }
+    
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    button {
+      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
+    }
+    
+    .skill-container {
+      margin-bottom: 15px;
+      border: 1px solid #e2e8f0;
+      padding: 15px;
+      border-radius: 6px;
+      position: relative;
+    }
+    
+    .remove-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    .add-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      margin-top: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9rem;
+    }
+    
+    .inline-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .tab-container {
+      margin-top: 30px;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+    }
+    
+    .tab.active {
+      color: #38bdf8;
+      border-bottom-color: #38bdf8;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .save-indicator {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: 500;
+      color: #10b981;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .save-indicator.show {
+      opacity: 1;
+    }
+    
+    /* Upload Status Styles */
+    .upload-status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    .upload-status.uploading {
+      display: block;
+      background-color: #f0f8ff;
+      color: #0066cc;
+      border: 1px solid #99ccff;
+    }
+    
+    .upload-status.success {
+      display: block;
+      background-color: #f0fff0;
+      color: #006600;
+      border: 1px solid #99cc99;
+    }
+    
+    .upload-status.error {
+      display: block;
+      background-color: #fff0f0;
+      color: #cc0000;
+      border: 1px solid #ff9999;
+    }
+    
+    .secondary-btn {
+      background-color: #5c6bc0;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .secondary-btn:hover {
+      background-color: #3f51b5;
+    }
+    
+    /* Note Box */
+    .note-box {
+      background-color: #f8f9fa;
+      border-left: 4px solid #5bc0de;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    
+    .note-box p {
+      margin: 0;
+    }
+    
+    .note-box a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    
+    .note-box a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Portfolio Content Management</h1>
+    
+    <form id="portfolioForm">
+      <!-- Personal Details Fieldset -->
+      <fieldset>
+        <legend>Personal Details</legend>
+        
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="title">Professional Title</label>
+          <input type="text" id="title" name="title" placeholder="e.g. Full-Stack Developer" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone">
+        </div>
+        
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" name="location" placeholder="e.g. New York, NY">
+        </div>
+        
+        <div class="form-group">
+          <label for="introShort">Short Introduction (for Home page)</label>
+          <textarea id="introShort" name="introShort" placeholder="A brief one or two sentence introduction" required></textarea>
+        </div>
+      </fieldset>
+      
+      <!-- About Me Fieldset -->
+      <fieldset>
+        <legend>About Me</legend>
+        
+        <div class="form-group">
+          <label for="aboutLong">Detailed About Text</label>
+          <textarea id="aboutLong" name="aboutLong" placeholder="Full description of your background, skills, and what makes you unique" required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="profileImage">Profile Image URL</label>
+          <input type="url" id="profileImage" name="profileImage" placeholder="URL to your professional photo">
+        </div>
+      </fieldset>
+      
+      <!-- Skills Fieldset -->
+      <fieldset>
+        <legend>Skills</legend>
+        
+        <div id="skills-container">
+          <div class="skill-container">
+            <button type="button" class="remove-btn" onclick="removeSkill(this)">×</button>
+            
+            <div class="form-group">
+              <label>Skill Name</label>
+              <input type="text" name="skillName[]" placeholder="e.g. HTML/CSS" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Proficiency Level (0-100%)</label>
+              <input type="number" name="skillLevel[]" min="0" max="100" required>
+            </div>
+          </div>
+        </div>
+        
+        <button type="button" class="add-btn" onclick="addSkill()">
+          <i class="fas fa-plus"></i> Add Skill
+        </button>
+      </fieldset>
+      
+      <!-- Experience Fieldset -->
+      <fieldset>
+        <legend>Work Experience</legend>
+        
+        <div id="experience-container">
+          <div class="skill-container">
+            <button type="button" class="remove-btn" onclick="removeExperience(this)">×</button>
+            
+            <div class="inline-fields">
+              <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" name="jobTitle[]" required>
+              </div>
+              
+              <div class="form-group">
+                <label>Company</label>
+                <input type="text" name="company[]" required>
+              </div>
+            </div>
+            
+            <div class="inline-fields">
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="text" name="jobStart[]" placeholder="e.g. June 2020" required>
+              </div>
+              
+              <div class="form-group">
+                <label>End Date</label>
+                <input type="text" name="jobEnd[]" placeholder="e.g. Present">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Job Description</label>
+              <textarea name="jobDescription[]" required></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <button type="button" class="add-btn" onclick="addExperience()">
+          <i class="fas fa-plus"></i> Add Experience
+        </button>
+      </fieldset>
+      
+      <!-- Education Fieldset -->
+      <fieldset>
+        <legend>Education</legend>
+        
+        <div id="education-container">
+          <div class="skill-container">
+            <button type="button" class="remove-btn" onclick="removeEducation(this)">×</button>
+            
+            <div class="inline-fields">
+              <div class="form-group">
+                <label>Degree/Certificate</label>
+                <input type="text" name="degree[]" required>
+              </div>
+              
+              <div class="form-group">
+                <label>Institution</label>
+                <input type="text" name="institution[]" required>
+              </div>
+            </div>
+            
+            <div class="inline-fields">
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="text" name="educationStart[]" placeholder="e.g. 2016" required>
+              </div>
+              
+              <div class="form-group">
+                <label>End Date</label>
+                <input type="text" name="educationEnd[]" placeholder="e.g. 2020">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Description</label>
+              <textarea name="educationDescription[]"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <button type="button" class="add-btn" onclick="addEducation()">
+          <i class="fas fa-plus"></i> Add Education
+        </button>
+      </fieldset>
+      
+      <!-- Social Media Fieldset -->
+      <fieldset>
+        <legend>Social Media Links</legend>
+        
+        <div class="form-group">
+          <label for="github">GitHub URL</label>
+          <input type="url" id="github" name="github">
+        </div>
+        
+        <div class="form-group">
+          <label for="linkedin">LinkedIn URL</label>
+          <input type="url" id="linkedin" name="linkedin">
+        </div>
+        
+        <div class="form-group">
+          <label for="twitter">Twitter URL</label>
+          <input type="url" id="twitter" name="twitter">
+        </div>
+        
+        <div class="form-group">
+          <label for="instagram">Instagram URL</label>
+          <input type="url" id="instagram" name="instagram">
+        </div>
+      </fieldset>
+      
+      <!-- Note about Resume -->
+      <div class="note-box">
+        <p><strong>Note:</strong> The resume is now managed through Google Drive. To update your resume, replace the file at <a href="https://drive.google.com/file/d/12r90JvMt69TnMSwNt4R9Ieh-yKpgsebi/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">this link</a> or update the link in index.html.</p>
+      </div>
+      
+      <div class="btn-container">
+        <button type="submit">Save Portfolio Content</button>
+      </div>
+      
+      <div id="saveIndicator" class="save-indicator">
+        Portfolio content saved successfully!
+      </div>
+    </form>
+  </div>
+  
+  <script>
+    // Add Skill
+    function addSkill() {
+      const container = document.getElementById('skills-container');
+      const newSkill = document.createElement('div');
+      newSkill.className = 'skill-container';
+      newSkill.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeSkill(this)">×</button>
+        
+        <div class="form-group">
+          <label>Skill Name</label>
+          <input type="text" name="skillName[]" placeholder="e.g. HTML/CSS" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Proficiency Level (0-100%)</label>
+          <input type="number" name="skillLevel[]" min="0" max="100" required>
+        </div>
+      `;
+      container.appendChild(newSkill);
+    }
+    
+    // Remove Skill
+    function removeSkill(button) {
+      const skillContainer = button.parentElement;
+      skillContainer.remove();
+    }
+    
+    // Add Experience
+    function addExperience() {
+      const container = document.getElementById('experience-container');
+      const newExp = document.createElement('div');
+      newExp.className = 'skill-container';
+      newExp.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeExperience(this)">×</button>
+        
+        <div class="inline-fields">
+          <div class="form-group">
+            <label>Job Title</label>
+            <input type="text" name="jobTitle[]" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" name="company[]" required>
+          </div>
+        </div>
+        
+        <div class="inline-fields">
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="text" name="jobStart[]" placeholder="e.g. June 2020" required>
+          </div>
+          
+          <div class="form-group">
+            <label>End Date</label>
+            <input type="text" name="jobEnd[]" placeholder="e.g. Present">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Job Description</label>
+          <textarea name="jobDescription[]" required></textarea>
+        </div>
+      `;
+      container.appendChild(newExp);
+    }
+    
+    // Remove Experience
+    function removeExperience(button) {
+      const container = button.parentElement;
+      container.remove();
+    }
+    
+    // Add Education
+    function addEducation() {
+      const container = document.getElementById('education-container');
+      const newEdu = document.createElement('div');
+      newEdu.className = 'skill-container';
+      newEdu.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeEducation(this)">×</button>
+        
+        <div class="inline-fields">
+          <div class="form-group">
+            <label>Degree/Certificate</label>
+            <input type="text" name="degree[]" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Institution</label>
+            <input type="text" name="institution[]" required>
+          </div>
+        </div>
+        
+        <div class="inline-fields">
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="text" name="educationStart[]" placeholder="e.g. 2016" required>
+          </div>
+          
+          <div class="form-group">
+            <label>End Date</label>
+            <input type="text" name="educationEnd[]" placeholder="e.g. 2020">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="educationDescription[]"></textarea>
+        </div>
+      `;
+      container.appendChild(newEdu);
+    }
+    
+    // Remove Education
+    function removeEducation(button) {
+      const container = button.parentElement;
+      container.remove();
+    }
+    
+    // Form Submission
+    document.getElementById('portfolioForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Here you would normally collect the form data and save it
+      const formData = new FormData(this);
+      
+      // For demonstration, just show the success message
+      const saveIndicator = document.getElementById('saveIndicator');
+      saveIndicator.classList.add('show');
+      
+      setTimeout(() => {
+        saveIndicator.classList.remove('show');
+      }, 3000);
+      
+      console.log('Form submitted');
+    });
+  </script>
+</body>
+</html> 
